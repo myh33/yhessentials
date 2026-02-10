@@ -221,6 +221,18 @@
             box-shadow: 0 15px 40px rgba(201, 168, 112, 0.4);
         }
         
+        .hero-emblem {
+            margin-top: 4rem;
+            animation: fadeIn 1.5s ease-out 0.5s both;
+        }
+        
+        .emblem-image {
+            max-width: 200px;
+            height: auto;
+            opacity: 0.9;
+            filter: drop-shadow(0 10px 30px rgba(201, 168, 112, 0.3));
+        }
+        
         /* About Section */
         .about-section {
             padding: 8rem 2rem;
@@ -331,6 +343,19 @@
             color: rgba(255,255,255,0.5);
         }
         
+        .footer-emblem-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .footer-emblem {
+            max-width: 120px;
+            height: auto;
+            opacity: 0.8;
+            filter: brightness(1.2);
+        }
+        
         /* Mobile Responsive */
         @media (max-width: 768px) {
             .hero h1 {
@@ -379,8 +404,11 @@
     <section class="hero">
         <div class="hero-content">
             <h1>Y8 1001 ESSENTIALS</h1>
-            <p class="hero-subtitle">Handgemaakte premium kleding van duurzame materialen - Merino wol & Eco-denim</p>
+            <p class="hero-subtitle">Handgemaakte premium kleding van duurzame materialen - Kasjmier, Merino wol & Eco-denim</p>
             <a href="collectie.html" class="cta-button">Ontdek Collectie</a>
+            <div class="hero-emblem">
+                <img src="nimes_1.jpg" alt="YH Essentials Embleem" class="emblem-image">
+            </div>
         </div>
     </section>
 
@@ -421,7 +449,7 @@
         <div class="footer-content">
             <div class="footer-section">
                 <h3>YH Essentials</h3>
-                <p>Handgemaakte urban essentials van 100% duurzame materialen. Premium merino wol en eco-denim. Ethisch geproduceerd - kwaliteit zonder compromis.</p>
+                <p>Handgemaakte urban essentials van 100% duurzame materialen. Premium kasjmier, merino wol en eco-denim. Ethisch geproduceerd - kwaliteit zonder compromis.</p>
             </div>
             <div class="footer-section">
                 <h3>Shop</h3>
@@ -431,6 +459,9 @@
                     <li><a href="collectie.html">Nieuw Binnen</a></li>
                     <li><a href="collectie.html">Alle Producten</a></li>
                 </ul>
+            </div>
+            <div class="footer-section footer-emblem-section">
+                <img src="nimes.jpg" alt="YH Essentials" class="footer-emblem">
             </div>
             <div class="footer-section">
                 <h3>Klantenservice</h3>
