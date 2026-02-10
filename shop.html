@@ -879,6 +879,172 @@
                 grid-template-columns: 1fr;
             }
         }
+        
+        /* Product Modal/Lightbox */
+        .product-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: 4000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .product-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-overlay-product {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 4001;
+        }
+        
+        .modal-content-product {
+            position: relative;
+            z-index: 4002;
+            background: var(--white);
+            border-radius: 20px;
+            max-width: 1100px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalSlideUp 0.4s ease-out;
+        }
+        
+        @keyframes modalSlideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .modal-close-product {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: var(--white);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .modal-close-product:hover {
+            background: var(--primary);
+            color: var(--white);
+            transform: rotate(90deg);
+        }
+        
+        .modal-body-product {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            padding: 3rem;
+        }
+        
+        .modal-image-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--light);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+        
+        .modal-image {
+            max-width: 100%;
+            max-height: 600px;
+            object-fit: contain;
+        }
+        
+        .modal-details {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .modal-category {
+            font-size: 0.85rem;
+            color: var(--secondary);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .modal-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            font-weight: 600;
+            line-height: 1.2;
+        }
+        
+        .modal-description {
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+        
+        .modal-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 2rem;
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .modal-buy-button {
+            width: 100%;
+            padding: 1.2rem 2rem;
+            background: var(--primary);
+            color: var(--white);
+            border: 2px solid var(--primary);
+            font-weight: 600;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+        
+        .modal-buy-button:hover {
+            background: transparent;
+            color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        .product-card .product-image {
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -1182,6 +1348,26 @@
     <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
     <div class="checkout-overlay" id="checkoutOverlay" onclick="closeCheckout()"></div>
 
+    <!-- Product Modal/Lightbox -->
+    <div class="product-modal" id="productModal">
+        <div class="modal-overlay-product" onclick="closeProductModal()"></div>
+        <div class="modal-content-product">
+            <button class="modal-close-product" onclick="closeProductModal()">✕</button>
+            <div class="modal-body-product">
+                <div class="modal-image-container">
+                    <img id="modalImage" src="" alt="" class="modal-image">
+                </div>
+                <div class="modal-details">
+                    <div class="modal-category" id="modalCategory"></div>
+                    <h2 class="modal-title" id="modalTitle"></h2>
+                    <p class="modal-description" id="modalDescription"></p>
+                    <div class="modal-price" id="modalPrice"></div>
+                    <button class="modal-buy-button" id="modalBuyButton">Koop Nu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Shopping Cart System
         let cart = JSON.parse(localStorage.getItem('yhCart') || '[]');
@@ -1235,6 +1421,82 @@
                 image: 'ChatGPT Image 9 feb 2026, 13_33_58.png'
             }
         ];
+        
+        // Product data with descriptions for modal
+        const productDetails = [
+            { 
+                id: 1, 
+                category: 'Denim Collection',
+                description: 'Handgemaakt van 100% duurzaam Japans selvedge denim. Eco-friendly productie met natuurlijke vintage wash. Elk paar uniek - volledig handcrafted.'
+            },
+            { 
+                id: 2, 
+                category: 'Denim Collection',
+                description: 'Handgemaakt van duurzaam Italian organic denim. Milieuvriendelijke productie met tailored fit. 100% biologisch katoen - zero waste proces.'
+            },
+            { 
+                id: 3, 
+                category: 'Accessoires',
+                description: 'Handgemaakt van full-grain Italiaans leer met merino wol padding voor ultiem comfort. 24K verguld messing hardware. Volledig duurzaam geproduceerd.'
+            },
+            { 
+                id: 4, 
+                category: 'Accessoires',
+                description: 'Handgemaakt van vegetaal gelooid leer met merino wol voering. Duurzame productie door Europese ambachtslieden. Waterafstotend en ademend.'
+            },
+            { 
+                id: 5, 
+                category: 'Accessoires',
+                description: 'Handgemaakt van full-grain leer met merino wol interior. Limited edition - duurzaam en ethisch geproduceerd. Genummerde serie van 25 stuks worldwide.'
+            },
+            { 
+                id: 6, 
+                category: 'Denim Collection',
+                description: 'Handgemaakt van premium duurzaam Japans denim. Perfecte medium wash voor een veelzijdige look. 100% biologisch katoen met eco-friendly productie.'
+            }
+        ];
+        
+        // Open product modal
+        function openProductModal(productId) {
+            const product = products.find(p => p.id === productId);
+            const details = productDetails.find(d => d.id === productId);
+            if (!product || !details) return;
+            
+            // Update modal content
+            document.getElementById('modalImage').src = product.image;
+            document.getElementById('modalImage').alt = product.name;
+            document.getElementById('modalCategory').textContent = details.category;
+            document.getElementById('modalTitle').textContent = product.name;
+            document.getElementById('modalDescription').textContent = details.description;
+            document.getElementById('modalPrice').textContent = `€${product.price.toFixed(2)}`;
+            
+            // Set buy button action
+            document.getElementById('modalBuyButton').onclick = function() {
+                addToCart(productId);
+                closeProductModal();
+            };
+            
+            // Show modal
+            document.getElementById('productModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // Close product modal
+        function closeProductModal() {
+            document.getElementById('productModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Make product images clickable
+        document.addEventListener('DOMContentLoaded', function() {
+            const productImages = document.querySelectorAll('.product-card .product-image');
+            productImages.forEach((img, index) => {
+                img.addEventListener('click', function() {
+                    openProductModal(index + 1);
+                });
+            });
+        });
+        
         
         // Toggle cart sidebar
         function toggleCart() {
